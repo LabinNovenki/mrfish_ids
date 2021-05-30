@@ -1,0 +1,52 @@
+Net(
+  (feature): Sequential(
+    (conv1): Conv2d(1, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (relu1): ReLU()
+    (conv2): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (relu2): ReLU()
+    (bn2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (conv3): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (relu3): ReLU()
+    (conv4): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (relu4): ReLU()
+    (bn4): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  )
+  (classifier): Sequential(
+    (fc1): Linear(in_features=1344, out_features=192, bias=True)
+    (dropout1): Dropout2d(p=0.3, inplace=False)
+    (fc2): Linear(in_features=192, out_features=32, bias=True)
+    (dropout2): Dropout2d(p=0.3, inplace=False)
+    (fc3): Linear(in_features=32, out_features=2, bias=True)
+  )
+)
+x.shape torch.Size([2, 1, 6, 7])
+out.shape1 torch.Size([2, 32, 6, 7])
+out.shape2 torch.Size([2, 2])
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1             [-1, 16, 6, 7]             160
+              ReLU-2             [-1, 16, 6, 7]               0
+            Conv2d-3             [-1, 32, 6, 7]           4,640
+              ReLU-4             [-1, 32, 6, 7]               0
+       BatchNorm2d-5             [-1, 32, 6, 7]              64
+            Conv2d-6             [-1, 64, 6, 7]          18,496
+              ReLU-7             [-1, 64, 6, 7]               0
+            Conv2d-8             [-1, 32, 6, 7]          18,464
+              ReLU-9             [-1, 32, 6, 7]               0
+      BatchNorm2d-10             [-1, 32, 6, 7]              64
+           Linear-11                  [-1, 192]         258,240
+        Dropout2d-12                  [-1, 192]               0
+           Linear-13                   [-1, 32]           6,176
+        Dropout2d-14                   [-1, 32]               0
+           Linear-15                    [-1, 2]              66
+================================================================
+Total params: 306,370
+Trainable params: 306,370
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.12
+Params size (MB): 1.17
+Estimated Total Size (MB): 1.29
+----------------------------------------------------------------

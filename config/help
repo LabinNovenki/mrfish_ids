@@ -1,0 +1,15 @@
+_____________________________*****HELP*****_____________________________
+welcome to the mrfish ver-0.5.5!
+mrfish is an intelligent intrusion detector based on convolutional neural network, click help to get detailed information of the software.
+
+Click the "start" button to start the background monitoring function of the softwareIn this mode, the software will start to capture the data packets flowing through the local network card, analyze them, and save them to the local log file.
+
+Click the "pause" button to pause background monitoring.
+
+Click the "View Log" button to view the local log file, which will display the latest records. If you want to view the complete log file, you can view it through the local log.txt file.
+
+Click the "quit" button to end the progress.
+
+Enter the specified instruction in the input box below and click the submit button, you will experience more personalized functions, the specific instructions are as follows.
+1.show pkt/con log	view the packet log or the connection log
+2.quit/exit		end the progress
