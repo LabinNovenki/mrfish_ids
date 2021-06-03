@@ -13,7 +13,7 @@ import data_process as dp
 
 global PAUSE
 PAUSE = False
-CLEAR = False
+CLEAR = True
 UPDATE_RECORD = False
 CLASSIFIER = False
 
@@ -28,7 +28,7 @@ def write_pkt(p, count):
     localtime = time.asctime(time.localtime(time.time()))
     with open("logs/log_pkt.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        row = [count, localtime, p.src, p.dst, p.sport, p.dport, protocal]
+        row = [count, localtime, p["IP"].src, p["IP"].dst, p.sport, p.dport, protocal]
         writer.writerow(row)
     return
 
@@ -41,6 +41,7 @@ def clear_pkt_csv():
     return
 
 
+# 清空连接日志
 def clear_con_csv():
     with open("logs/log_con.csv", "w", newline='') as csvfile:
         writer = csv.writer(csvfile)
@@ -51,7 +52,7 @@ def clear_con_csv():
                          "response_body_len", "ct_srv_src", "ct_state_ttl", "ct_dst_ltm",
                          "ct_src_dport_ltm", "ct_dst_sport_ltm", "ct_dst_src_ltm", "is_ftp_login",
                          "ct_ftp_cmd", "ct_flw_http_mthd", "ct_src_ltm", "ct_srv_dst",
-                         "is_sm_ips_ports", "Source", "Destination", "Time"])
+                         "is_sm_ips_ports", "Source", "Destination", "Time", "label", "attack_cat"])
     return
 
 
@@ -72,6 +73,23 @@ finished_connections = cs.Connection_set()
 filter_str = "dst or src net %s" % server_ip
 count_pkt = len(log_pkt_df)
 count_con = len(log_con_df)
+
+
+def connect_detect(connection):
+    global count_con
+    count_con += 1
+    connection.output_to_csv(count_con)
+    print("detecting...")
+    in_features = connection.in_features()
+    print(in_features)
+    in_features = dp.connection_processing(in_features)
+    print(in_features)
+    res = identify.detect_rnn(in_features)
+    if res.item() == 0 and CLASSIFIER:
+        pass
+        # TODO
+    # print(in_features)
+    print(res)
 
 
 def handel_packet(pkt):  # p捕获到的数据包
@@ -96,6 +114,7 @@ def handel_packet(pkt):  # p捕获到的数据包
                     connection = connecting_ip[dstip]
                     connection.end_connection(pkt, now)
                     finished_connections.connection_ct_features(connection)
+                    connect_detect(connection)
                     finished_connections.add_connection(connection)
                 if pkt.haslayer('TCP'):
                     connection = connecting_ip[dstip]
@@ -104,6 +123,7 @@ def handel_packet(pkt):  # p捕获到的数据包
                     connection = pkt_parse.Connection(pkt)
                     connection.end_connection(pkt, now)
                     finished_connections.connection_ct_features(connection)
+                    connect_detect(connection)
                     finished_connections.add_connection(connection)
 
             elif dstip == server_ip:  # 客户端发往服务器的包
@@ -120,6 +140,7 @@ def handel_packet(pkt):  # p捕获到的数据包
                         connection.Spkts += 1
                         connection.end_connection(pkt, now)
                         finished_connections.connection_ct_features(connection)
+                        connect_detect(connection)
                         finished_connections.add_connection(connection)
                         del connecting_ip[srcip]
                         # TCP连接异常结束
@@ -128,6 +149,7 @@ def handel_packet(pkt):  # p捕获到的数据包
                         connection.src_to_dst_pkt(pkt)
                         connection.end_connection(pkt, now)
                         finished_connections.connection_ct_features(connection)
+                        connect_detect(connection)
                         finished_connections.add_connection(connection)
                         del connecting_ip[srcip]
                         # 其他包
@@ -138,20 +160,10 @@ def handel_packet(pkt):  # p捕获到的数据包
                 elif pkt.haslayer('UDP'):
                     connection = pkt_parse.Connection(pkt)
                     finished_connections.connection_ct_features(connection)
+                    connect_detect(connection)
                     finished_connections.add_connection(connection)
-        if connection is not None:
-            count_con += 1
-            connection.output_to_csv(count_con)
-            print("detecting...")
-            in_features = connection.in_features()
-            in_features = dp.connection_processing(in_features)
-            res = identify.detect_rnn(in_features)
-            if res.item() == 0 and CLASSIFIER:
-                pass
-                # TODO
-            # print(in_features)
-            print(res)
-    except TypeError and AttributeError:
+
+    except FileNotFoundError:#TypeError and AttributeError:
         pass
 
 
@@ -159,7 +171,7 @@ def start_sniff():
     # if UPDATE_RECORD:
     #     dp.data_processing("logs/log_con.csv")
     print("starting the program...")
-    sniff(prn=handel_packet, count=0, filter=filter_str, timeout=60)
+    sniff(prn=handel_packet, count=0, filter=filter_str, timeout=5)
     print("sniff() finished.")
 
-# start_sniff()
+start_sniff()

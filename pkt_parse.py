@@ -61,6 +61,8 @@ class Connection:
         self.ct_dst_sport_ltm = 0
         self.ct_dst_src_ltm = 0
         self.syn_ack_time = 0
+        self.lable = 0
+        self.attack_cat = 0
 
         ip = p.getlayer("IP")
         self.srcip = ip.src
@@ -202,7 +204,7 @@ class Connection:
                    self.ct_src_dport_ltm, self.ct_dst_sport_ltm,self.ct_dst_src_ltm,
                    self.is_ftp_login, self.ct_ftp_cmd, self.ct_flw_http_mthd,
                    self.ct_src_ltm, self.ct_srv_dst, self.is_sm_ips_ports,
-                   self.srcip, self.dstip, self.start_time]
+                   self.srcip, self.dstip, self.start_time, self.lable, self.attack_cat]
             writer.writerow(row)
 
     def in_features(self):
