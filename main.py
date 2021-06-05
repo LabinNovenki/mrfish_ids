@@ -129,7 +129,7 @@ class Ui_MainWindow(QDialog):
         self.closeWinBtn.setText(_translate("MainWindow", "quit"))
         self.input_btn.setText(_translate("MainWindow", "submit"))
         self.label.setText(_translate("MainWindow", "       欢迎使用mrfish智能入侵检测器"))
-        welcome_str = 'welcome to the mrfish ver-0.5.5!\nmrfish is an intelligent ' \
+        welcome_str = 'welcome to the mrfish ver-1.0.0!\nmrfish is an intelligent ' \
                       'intrusion detector based on convolut' \
                       'ional neural network, click help to get detailed information of the software.'
 
@@ -140,16 +140,22 @@ class Ui_MainWindow(QDialog):
         self.le.setPixmap(QPixmap(fname))
 
     def print_log_pkt(self):
+        receive.PAUSE = True
+        self.pushButton.setDisabled(False)
         data = ipd.print_log_pkt()
         self.textEdit.setText(data)
         self.textEdit.viewport().update()
 
     def print_log_con(self):
+        receive.PAUSE = True
+        self.pushButton.setDisabled(False)
         data = ipd.print_log_con()
         self.textEdit.setText(data)
         self.textEdit.viewport().update()
 
     def gethelp(self):
+        receive.PAUSE = True
+        self.pushButton.setDisabled(False)
         try:
             f = open('config/help', 'r')
         except:
@@ -167,14 +173,24 @@ class Ui_MainWindow(QDialog):
         # td_sniff = td.Thread(target=receive.start_sniff(), name='sniff')
         # td_sniff.start()
         # receive.start_sniff()
+        msg = "Start monitoring the network..."
+        self.textEdit.setText(msg)
+        self.textEdit.viewport().update()
         receive.PAUSE = False
-        self.pushButton.setDisabled(True)
-        self.sniff_td.start()
+        try:
+            self.pushButton.setDisabled(True)
+            self.sniff_td.start()
+        except:
+            self.pushButton.setDisabled(False)
+            msg = "Fail to start."
+            self.textEdit.setText(msg)
+            self.textEdit.viewport().update()
 
     def pause(self):
         receive.PAUSE = True
-        self.sniff_td.quit()
         self.pushButton.setDisabled(False)
+        self.textEdit.setText("Sniff Pause.")
+        self.textEdit.viewport().update()
 
     def input(self):
         text = self.line_input.text()
@@ -196,4 +212,6 @@ if __name__ == '__main__':
     window.setupUi(form)
 
     form.show()
+
+
     sys.exit(app.exec_())

@@ -11,5 +11,9 @@ Click the "View Log" button to view the local log file, which will display the l
 Click the "quit" button to end the progress.
 
 Enter the specified instruction in the input box below and click the submit button, you will experience more personalized functions, the specific instructions are as follows.
-1.show pkt/con log	view the packet log or the connection log
-2.quit/exit		end the progress
+1.show pkt/con log		view the packet log or the connection log
+2.quit/exit		end the program
+3.set mod cnn/nn/rnn		set the identify engine in different working mode to meet the needs in different suituations, default : rnn mode
+4.clear on/off		do or do not clear the log files before running the sniffer.
+5.update on/off		do or do not update the records.csv files.
+6.classify on/off	do or do not try to classify the possible risks.

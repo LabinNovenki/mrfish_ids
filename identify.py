@@ -11,6 +11,7 @@ import data_process as dp
 
 UPDATE_RECORDS = True
 
+
 class Net_nn(nn.Module):
     def __init__(self):
         super(Net_nn, self).__init__()
@@ -119,12 +120,12 @@ class Net(nn.Module):
         )
 
     def forward(self, x):
-        print('x.shape', x.shape)
+        # print('x.shape', x.shape)
         out = self.feature(x)
-        print('out.shape1', out.shape)
+        # print('out.shape1', out.shape)
         out = out.view(x.size(0), -1)
         out = self.classifier(out)
-        print('out.shape2', out.shape)
+        # print('out.shape2', out.shape)
         return out
 
     def predict(self, x):
@@ -175,21 +176,28 @@ def detect_cnn(connection):
     cnn = torch.load('recognizer/model_cnn_9.pkl')
     connection = dp.data_trans_cnn(connection)
     ans = cnn.predict(connection)
-    return ans[0]
+    return ans.item()
 
 
 def detect_nn(connection):
     nn = torch.load('recognizer/model4.pkl')
     connection = dp.data_trans_nn(connection)
     ans = nn.predict(connection)
-    return ans[0]
+    return ans.item()
 
 
 def detect_rnn(connection):
     rnn = torch.load('recognizer/model_lstm_1.pkl')
     connection = dp.data_trans_rnn(connection)
     ans = rnn.predict(connection)
-    return ans[0]
+    return ans.item()
+
+
+def detect_classify(connection):
+    cnn = torch.load('recognizer/model3_multi.pkl')
+    connection = dp.data_trans_cnn(connection)
+    ans = cnn.predict(connection)
+    return ans.item()
 
 '''
 # cnn = torch.load('recognizer/model_cnn_9.pkl')

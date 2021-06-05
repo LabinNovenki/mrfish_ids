@@ -1,6 +1,7 @@
 import prettytable as pt
 import pandas as pd
-
+import configparser as cp
+import re
 
 def print_log_pkt():
     try:
@@ -34,17 +35,57 @@ def print_log_con():
     return str(table)
 
 
-def input_dealing(str):
+def input_dealing(string):
     ret = ''
+    # print(string)
+    string = string.lower()
+    conf = cp.ConfigParser()
+    conf.read('config/settings.ini', encoding='utf-8')
     # print('get command:', str)
-    if str == 'show log':
+    if string == 'show log':
         ret = 'Unrecognized command.\nmay be you want to write command as follows:\n' \
               '1.show pkt log\n2.show con log'
-    elif str == 'show pkt log':
+    elif string == 'show pkt log':
         ret = print_log_pkt()
-    elif str == 'show con log':
+    elif string == 'show con log':
         ret = print_log_con()
-    elif str == 'quit' or str == 'exit':
+    elif string == 'set mod cnn':
+        conf.set('sniffer', 'MOD', '1')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'set mod nn':
+        conf.set('sniffer', 'MOD', '2')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'set mod rnn':
+        conf.set('sniffer', 'MOD', '3')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'clear on':
+        conf.set('sniffer', 'CLEAR', '1')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'clear off':
+        conf.set('sniffer', 'CLEAR', '0')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'update on':
+        conf.set('sniffer', 'UPDATE', '1')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'update off':
+        conf.set('sniffer', 'UPDATE', '0')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'classify on':
+        conf.set('sniffer', 'CLASSIFIER', '1')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'classify off':
+        conf.set('sniffer', 'CLASSIFIER', '0')
+        conf.write(open('config/settings.ini', "w"))
+        ret = 'the setting has been modified.'
+    elif string == 'quit' or string == 'exit':
         exit(0)
     else:
         ret = 'Unrecognized command.\nPlease check your command input, or click ' \

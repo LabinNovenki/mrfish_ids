@@ -188,12 +188,12 @@ class Connection:
         else:
             self.service = '-'
 
-    def output_to_csv(self, count):
+    def output_to_csv(self, count, file):
         """
         将本次连接的特征以.csv文件形式输出
         :return:
         """
-        with open("logs/log_con.csv", "a", newline="") as csvfile:
+        with open(file, "a", newline="") as csvfile:
             writer = csv.writer(csvfile)
             row = [count, self.dur, self.proto, self.service, 1.8620, self.Spkts, self.Dpkts,
                    self.sbytes, self.dbytes, 82410.88, self.sttl, self.dttl, self.Sload,

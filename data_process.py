@@ -22,7 +22,7 @@ def data_processing(csv_file):
         data.loc[index, 'service'] = int(conf.get('service', data.loc[index, 'service']))
     # print('processing row' + str(index) + '...')
 
-    conf.read("config/settings.ini", encoding='utf-8')
+    conf.read("config/dataparam.ini", encoding='utf-8')
     # 完成数据的归一化
     for each_col in data:
         # print(each_col)
@@ -52,7 +52,7 @@ def connection_processing(connection):
     else:
         connection[0][2] = 999
     # print('processing row' + str(index) + '...')
-    conf.read("config/settings.ini", encoding='utf-8')
+    conf.read("config/dataparam.ini", encoding='utf-8')
     # 完成数据的归一化
     param = [(59.999989, 0.0), (132, 2), (999, 2), (7, 1), (10646, 1), (11018, 0),
              (14355774, 24), (14657531, 0),(1000000.003, 0.0),
